@@ -1,10 +1,10 @@
 'use strict'
 
-const traverson = require('traverson')
-const Promise = require('bluebird')
-const Builder = traverson._Builder
+var traverson = require('traverson')
+var Promise = require('bluebird')
+var Builder = traverson._Builder
 
-let originalMethods = {
+var originalMethods = {
   get: Builder.prototype.get,
   getResource: Builder.prototype.getResource,
   getUrl: Builder.prototype.getUrl,
@@ -15,25 +15,28 @@ let originalMethods = {
 }
 
 function defer () {
-  let resolve, reject
+  var resolve = void 0
+  var reject = void 0
 
-  const promise = new Promise(function () {
+  var promise = new Promise(function () {
     resolve = arguments[0]
     reject = arguments[1]
   })
 
   return {
-    resolve,
-    reject,
-    promise
+    resolve: resolve,
+    reject: reject,
+    promise: promise
   }
 }
 
-function promisify (context, originalMethod, argsArray = []) {
-  const deferred = defer()
-  let traversal
+function promisify (context, originalMethod) {
+  var argsArray = arguments.length <= 2 || arguments[2] === undefined ? [] : arguments[2]
 
-  const callback = function (err, result, _traversal) {
+  var deferred = defer()
+  var traversal = void 0
+
+  var callback = function callback (err, result, _traversal) {
     if (err) {
       err.result = result
       deferred.reject(err)
@@ -45,15 +48,16 @@ function promisify (context, originalMethod, argsArray = []) {
 
   argsArray.push(callback)
 
-  const traversalHandler = originalMethod.apply(context, argsArray)
+  var traversalHandler = originalMethod.apply(context, argsArray)
 
   function continueTraversal () {
-    const deferredContinue = defer()
+    var deferredContinue = defer()
 
-    deferred.promise.then(
-      () => deferredContinue.resolve(traversal.continue()),
-      () => { throw new Error('Can\'t continue from a broken traversal.') }
-    )
+    deferred.promise.then(function () {
+      return deferredContinue.resolve(traversal.continue())
+    }, function () {
+      throw new Error('Can\'t continue from a broken traversal.')
+    })
 
     return deferredContinue.promise
   }
@@ -62,12 +66,8 @@ function promisify (context, originalMethod, argsArray = []) {
     result: deferred.promise,
     continue: continueTraversal,
     abort: traversalHandler.abort,
-    then: function () {
-      throw new Error('As of version 2.0.0, Traverson\'s action methods ' +
-        'do no longer return the promise directly. Code like \n' +
-        'traverson.from(url).follow(...).getResource().then(...)\n' +
-        'needs to be changed to \n' +
-        'traverson.from(url).follow(...).getResource().result.then(...)')
+    then: function then () {
+      throw new Error('As of version 2.0.0, Traverson\'s action methods ' + 'do no longer return the promise directly. Code like \n' + 'traverson.from(url).follow(...).getResource().then(...)\n' + 'needs to be changed to \n' + 'traverson.from(url).follow(...).getResource().result.then(...)')
     }
   }
 }
