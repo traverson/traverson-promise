@@ -35,14 +35,19 @@ function promisify (context, originalMethod) {
 
   var deferred = defer()
   var traversal = void 0
+  var resultWithTraversalDeferred = defer()
 
   var callback = function callback (err, result, _traversal) {
     if (err) {
       err.result = result
       deferred.reject(err)
+      // Pass the error and traversal to reject handler on resultWithTraversal
+      resultWithTraversalDeferred.reject({ error: err, traversal })
     } else {
       traversal = _traversal
       deferred.resolve(result)
+      // Pass the response and traversal to resolve handler on resultWithTraversal
+      resultWithTraversalDeferred.resolve({ result, traversal })
     }
   }
 
@@ -64,6 +69,7 @@ function promisify (context, originalMethod) {
 
   return {
     result: deferred.promise,
+    resultWithTraversal: resultWithTraversalDeferred.promise,
     continue: continueTraversal,
     abort: traversalHandler.abort,
     then: function then () {
@@ -101,3 +107,4 @@ Builder.prototype.delete = Builder.prototype.del = function () {
 }
 
 module.exports = traverson
+
