@@ -38,13 +38,14 @@ function promisify (context, originalMethod) {
   var resultWithTraversalDeferred = defer()
 
   var callback = function callback (err, result, _traversal) {
+    traversal = _traversal
+
     if (err) {
       err.result = result
       deferred.reject(err)
       // Pass the error and traversal to reject handler on resultWithTraversal
       resultWithTraversalDeferred.reject({ error: err, traversal })
     } else {
-      traversal = _traversal
       deferred.resolve(result)
       // Pass the response and traversal to resolve handler on resultWithTraversal
       resultWithTraversalDeferred.resolve({ result, traversal })
