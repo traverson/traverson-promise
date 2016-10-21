@@ -42,9 +42,10 @@ function promisify (context, originalMethod) {
 
     if (err) {
       err.result = result
+      err.traversal = traversal
       deferred.reject(err)
       // Pass the error and traversal to reject handler on resultWithTraversal
-      resultWithTraversalDeferred.reject({ error: err, traversal: traversal })
+      resultWithTraversalDeferred.reject(err)
     } else {
       deferred.resolve(result)
       // Pass the response and traversal to resolve handler on resultWithTraversal
