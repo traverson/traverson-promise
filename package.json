@@ -1,6 +1,6 @@
 {
   "name": "traverson-promise",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Deadly simple wrapper of traverson with promise",
   "main": "traverson-promise.js",
   "jest": {
@@ -19,7 +19,7 @@
   "license": "MIT",
   "dependencies": {
     "bluebird": "^3.4.6",
-    "traverson": "^3.2.0"
+    "traverson": "^5.0.0"
   },
   "devDependencies": {
     "jest": "^15.1.1"
