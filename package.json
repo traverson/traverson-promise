@@ -19,9 +19,9 @@
   "license": "MIT",
   "dependencies": {
     "bluebird": "^3.4.6",
-    "traverson": "6.0.3"
+    "traverson": "6.0.4"
   },
   "devDependencies": {
-    "jest": "^15.1.1"
+    "jest": "^23.4.1"
   }
 }
