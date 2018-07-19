@@ -1,7 +1,7 @@
 'use strict'
 
 var traverson = require('traverson')
-var Promise = require('bluebird')
+var Promise = require('any-promise')
 var Builder = traverson._Builder
 
 var originalMethods = {
